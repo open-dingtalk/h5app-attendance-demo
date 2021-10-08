@@ -36,7 +36,7 @@ class App extends React.Component {
             shiftData: {
                 classGroupName: "def",
                 shiftName: "白班",
-                checkTime: "2021-12-02 09:00:00"
+                checkTime: "2020-10-18 08:00:00"
             },
             scheduleInfo: {
                 schedules: []
@@ -44,19 +44,19 @@ class App extends React.Component {
             record: {
                 deviceName: "东门打卡机",
                 deviceId: 1,
-                time: "2021-12-02 09:00:00"
+                time: "2021-10-18 09:00:00"
             },
             query: {
-                workDateFrom: "2021-11-07 08:00:00",
-                workDateTo: "2021-11-11 08:00:00",
+                workDateFrom: "2021-10-18 08:00:00",
+                workDateTo: "2021-10-18 08:00:00",
                 offset: 0,
                 limit: 50,
                 userIdList: []
             },
             recordList: [],
             leaveInfo: {
-                startTime: "2021-12-02 09:00:00",
-                endTime: "2021-12-12 09:00:00"
+                startTime: "2021-10-18 09:00:00",
+                endTime: "2021-10-18 09:00:00"
             },
             leaveList: []
         }
@@ -158,7 +158,7 @@ class App extends React.Component {
     leaveStatus() {
         let data = this.state.leaveInfo;
         data.userIdList = this.state.userId;
-        axios.post(this.state.domain + "/attendance/leaveStatus", JSON.stringify(data)
+        axios.post(this.state.domain + "/attendance/leaveStatus", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
                 if (res.data.data) {
@@ -178,7 +178,7 @@ class App extends React.Component {
     attendanceList() {
         let data = this.state.query;
         data.userIdList.push(this.state.userId);
-        axios.post(this.state.domain + "/attendance/attendanceList", JSON.stringify(data)
+        axios.post(this.state.domain + "/attendance/attendanceList", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
                 if (res.data.data) {
@@ -198,7 +198,7 @@ class App extends React.Component {
     uploadRecord() {
         let data = this.state.record;
         data.userId = this.state.userId;
-        axios.post(this.state.domain + "/attendance/uploadRecord", JSON.stringify(data)
+        axios.post(this.state.domain + "/attendance/uploadRecord", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
                 if (res.data.data.success) {
@@ -222,7 +222,7 @@ class App extends React.Component {
             workDate: new Date().getTime(),
         }
         data.schedules.push(info);
-        axios.post(this.state.domain + "/attendance/attendanceSchedule", JSON.stringify(data)
+        axios.post(this.state.domain + "/attendance/attendanceSchedule", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
                 if (res.data.data.success) {
@@ -239,7 +239,7 @@ class App extends React.Component {
     createShift() {
         let data = this.state.shiftData;
         data.userId = this.state.userId;
-        axios.post(this.state.domain + "/attendance/createShift", JSON.stringify(data)
+        axios.post(this.state.domain + "/attendance/createShift", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
                 if (res.data.data) {
@@ -260,7 +260,7 @@ class App extends React.Component {
     createGroup() {
         let data = this.state.groupData;
         data.userId = this.state.userId;
-        axios.post(this.state.domain + "/attendance/createGroup", JSON.stringify(data)
+        axios.post(this.state.domain + "/attendance/createGroup", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
                 if (res.data.data) {

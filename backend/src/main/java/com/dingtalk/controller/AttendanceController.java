@@ -2,6 +2,7 @@ package com.dingtalk.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.dingtalkim_1_0.models.TopboxCloseResponse;
 import com.aliyun.dingtalkim_1_0.models.TopboxOpenResponse;
 import com.aliyun.dingtalkim_1_0.models.UpdateInteractiveCardResponse;
@@ -12,6 +13,7 @@ import com.dingtalk.model.RpcServiceResult;
 import com.dingtalk.service.AttendanceManager;
 import com.dingtalk.util.TimeUtil;
 import com.taobao.api.ApiException;
+import com.taobao.api.internal.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +30,16 @@ public class AttendanceController {
 
     @RequestMapping("/createGroup")
     @PostMapping
-    public RpcServiceResult createGroup(@RequestBody Map params) throws ApiException {
+    public RpcServiceResult createGroup(@RequestBody String paramStr) throws ApiException {
+        System.out.println("paramStr: " + paramStr);
+        Map params = JSONObject.parseObject(paramStr, Map.class);
         String userId = params.get("userId").toString();
         String positionString = params.get("positions").toString();
-        List<OapiAttendanceGroupAddRequest.TopPositionVo> topPositionVos = JSONArray.parseArray(JSON.toJSONString(positionString), OapiAttendanceGroupAddRequest.TopPositionVo.class);
+        System.out.println("positionString: " + positionString);
+        List<OapiAttendanceGroupAddRequest.TopPositionVo> topPositionVos = JSONArray.parseArray(positionString, OapiAttendanceGroupAddRequest.TopPositionVo.class);
         String memberString = params.get("members").toString();
-        List<OapiAttendanceGroupAddRequest.TopMemberVo> memberVos = JSONArray.parseArray(JSON.toJSONString(memberString), OapiAttendanceGroupAddRequest.TopMemberVo.class);
+        List<OapiAttendanceGroupAddRequest.TopMemberVo> memberVos = JSONArray.parseArray(memberString, OapiAttendanceGroupAddRequest.TopMemberVo.class);
+        memberVos.forEach(topMemberVo -> topMemberVo.setUserId(userId));
         String attendanceName = params.get("name").toString();
         OapiAttendanceGroupAddResponse.TopGroupVo topGroupVo = attendanceManager.createGroup(userId, topPositionVos, memberVos, attendanceName);
         log.info("createGroup:{}", topGroupVo);
@@ -42,10 +48,13 @@ public class AttendanceController {
 
     @RequestMapping("/createShift")
     @PostMapping
-    public RpcServiceResult createShift(@RequestBody Map params) throws Exception {
+    public RpcServiceResult createShift(@RequestBody String paramStr) throws Exception {
+        System.out.println("paramStr: " + paramStr);
+        Map params = JSONObject.parseObject(paramStr, Map.class);
         String userId = params.get("userId").toString();
         String classGroupName = params.get("classGroupName").toString();
-        String checkTime = params.get("checkTime").toString();
+//        String checkTime = params.get("checkTime").toString();
+        String checkTime = "2021-10-18 09:00:00";
         String shiftName = params.get("shiftName").toString();
         OapiAttendanceShiftAddResponse.TopAtClassVo shift = attendanceManager.createShift(userId, classGroupName, checkTime, shiftName);
         log.info("createShift:{}", shift);
@@ -54,11 +63,13 @@ public class AttendanceController {
 
     @RequestMapping("/attendanceSchedule")
     @PostMapping
-    public RpcServiceResult attendanceSchedule(@RequestBody Map params) throws Exception {
+    public RpcServiceResult attendanceSchedule(@RequestBody String paramStr) throws Exception {
+        System.out.println("paramStr: " + paramStr);
+        Map params = JSONObject.parseObject(paramStr, Map.class);
         String userId = params.get("userId").toString();
         Long groupId = (Long) params.get("groupId");
         String listString = params.get("schedules").toString();
-        List<OapiAttendanceGroupScheduleAsyncRequest.TopScheduleParam> topScheduleParams = JSONArray.parseArray(JSON.toJSONString(listString), OapiAttendanceGroupScheduleAsyncRequest.TopScheduleParam.class);
+        List<OapiAttendanceGroupScheduleAsyncRequest.TopScheduleParam> topScheduleParams = JSONArray.parseArray(listString, OapiAttendanceGroupScheduleAsyncRequest.TopScheduleParam.class);
         OapiAttendanceGroupScheduleAsyncResponse response = attendanceManager.attendanceSchedule(userId, groupId, topScheduleParams);
         log.info("attendanceSchedule:{}", response);
         return RpcServiceResult.getSuccessResult(response);
@@ -66,7 +77,9 @@ public class AttendanceController {
 
     @RequestMapping("/uploadRecord")
     @PostMapping
-    public RpcServiceResult uploadRecord(@RequestBody Map params) throws Exception {
+    public RpcServiceResult uploadRecord(@RequestBody String paramStr) throws Exception {
+        System.out.println("paramStr: " + paramStr);
+        Map params = JSONObject.parseObject(paramStr, Map.class);
         String userId = params.get("userId").toString();
         String deviceName = params.get("deviceName").toString();
         String deviceId = params.get("deviceId").toString();
@@ -78,11 +91,13 @@ public class AttendanceController {
 
     @RequestMapping("/attendanceList")
     @PostMapping
-    public RpcServiceResult attendanceList(@RequestBody Map params) throws Exception {
+    public RpcServiceResult attendanceList(@RequestBody String paramStr) throws Exception {
+        System.out.println("paramStr: " + paramStr);
+        Map params = JSONObject.parseObject(paramStr, Map.class);
         String workDateFrom = params.get("workDateFrom").toString();
         String workDateTo = params.get("workDateTo").toString();
-        long offset = (long) params.get("offset");
-        long limit = (long) params.get("limit");
+        long offset = (int) params.get("offset");
+        long limit = (int) params.get("limit");
         String userIdListString = params.get("userIdList").toString();
         List<String> userIdList = Arrays.asList(userIdListString);
         List<OapiAttendanceListResponse.Recordresult> recordresults = attendanceManager.attendanceList(workDateFrom, workDateTo, userIdList, offset, limit);
@@ -92,10 +107,12 @@ public class AttendanceController {
 
     @RequestMapping("/leaveStatus")
     @PostMapping
-    public RpcServiceResult leaveStatus(@RequestBody Map params) throws Exception {
+    public RpcServiceResult leaveStatus(@RequestBody String paramStr) throws Exception {
+        System.out.println("paramStr: " + paramStr);
+        Map params = JSONObject.parseObject(paramStr, Map.class);
         String userIdList = params.get("userIdList").toString();
-        long startTime = (long)params.get("startTime");
-        long endTime = (long)params.get("endTime");
+        long startTime = StringUtils.parseDateTime(params.get("startTime").toString()).getTime();
+        long endTime = StringUtils.parseDateTime(params.get("endTime").toString()).getTime();
         OapiAttendanceGetleavestatusResponse.LeaveStatusListVO leaveStatus = attendanceManager.getLeaveStatus(userIdList, startTime, endTime);
         log.info("leaveStatus:{}", leaveStatus);
         return RpcServiceResult.getSuccessResult(leaveStatus.getLeaveStatus());

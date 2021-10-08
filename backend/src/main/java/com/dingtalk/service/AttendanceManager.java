@@ -99,7 +99,8 @@ public class AttendanceManager {
         sectionVo.setTimes(timeVos);
         sectionVos.add(sectionVo);
         topAtClassVo.setSections(sectionVos);
-
+        request.setOpUserId(userId);
+        request.setShift(topAtClassVo);
         OapiAttendanceShiftAddResponse rsp = client.execute(request, accessToken);
         log.info("create shift rsp body:{}", rsp.getBody());
         if(rsp.getSuccess()){
