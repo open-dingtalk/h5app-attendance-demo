@@ -44,19 +44,19 @@ class App extends React.Component {
             record: {
                 deviceName: "东门打卡机",
                 deviceId: 1,
-                time: "2021-10-18 09:00:00"
+                time: "2021-10-09 09:00:00"
             },
             query: {
-                workDateFrom: "2021-10-18 08:00:00",
-                workDateTo: "2021-10-18 08:00:00",
+                workDateFrom: "2021-09-01 00:00:00",
+                workDateTo: "2021-09-06 08:00:00",
                 offset: 0,
                 limit: 50,
                 userIdList: []
             },
             recordList: [],
             leaveInfo: {
-                startTime: "2021-10-18 09:00:00",
-                endTime: "2021-10-18 09:00:00"
+                startTime: "2021-10-08 09:00:00",
+                endTime: "2021-10-12 09:00:00"
             },
             leaveList: []
         }

@@ -1,5 +1,6 @@
 package com.dingtalk.service;
 
+import com.alibaba.fastjson.JSON;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.*;
@@ -95,12 +96,14 @@ public class AttendanceManager {
         timeVo.setCheckTime(StringUtils.parseDateTime(checkTime));
         timeVo.setCheckType("OnDuty");
         timeVo.setFreeCheck(false);
+        timeVo.setEndMin(-1L);
         timeVos.add(timeVo);
         sectionVo.setTimes(timeVos);
         sectionVos.add(sectionVo);
         topAtClassVo.setSections(sectionVos);
         request.setOpUserId(userId);
         request.setShift(topAtClassVo);
+        log.info("create shift request:{}", JSON.toJSONString(request));
         OapiAttendanceShiftAddResponse rsp = client.execute(request, accessToken);
         log.info("create shift rsp body:{}", rsp.getBody());
         if(rsp.getSuccess()){
@@ -131,7 +134,7 @@ public class AttendanceManager {
         req.setGroupId(groupId);
         req.setSchedules(list);
         OapiAttendanceGroupScheduleAsyncResponse rsp = client.execute(req, accessToken);
-        log.info("create shift rsp body:{}", rsp.getBody());
+        log.info("attendanceSchedule rsp body:{}", rsp.getBody());
         if(rsp.getSuccess()){
             return rsp;
         }
@@ -161,7 +164,7 @@ public class AttendanceManager {
         req.setDeviceId(deviceId);
         req.setUserCheckTime(StringUtils.parseDateTime(time).getTime());
         OapiAttendanceRecordUploadResponse rsp = client.execute(req, accessToken);
-        log.info("create shift rsp body:{}", rsp.getBody());
+        log.info("uploadRecord rsp body:{}", rsp.getBody());
         if(rsp.getSuccess()){
             return rsp;
         }
@@ -193,7 +196,7 @@ public class AttendanceManager {
         req.setOffset(offset);
         req.setLimit(limit);
         OapiAttendanceListResponse rsp = client.execute(req, accessToken);
-        log.info("create shift rsp body:{}", rsp.getBody());
+        log.info("attendanceList rsp body:{}", rsp.getBody());
         if("ok".equals(rsp.getErrmsg())){
             return rsp.getRecordresult();
         }
@@ -223,7 +226,7 @@ public class AttendanceManager {
         req.setOffset(0L);
         req.setSize(10L);
         OapiAttendanceGetleavestatusResponse rsp = client.execute(req, accessToken);
-        log.info("create shift rsp body:{}", rsp.getBody());
+        log.info("getLeaveStatus rsp body:{}", rsp.getBody());
         if(rsp.getSuccess()){
             return rsp.getResult();
         }
