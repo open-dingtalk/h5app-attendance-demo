@@ -35,6 +35,10 @@ public class UrlConstant {
      * 考勤排班 url
      */
     public static final String ATTENDANCE_SCHEDULE = "https://oapi.dingtalk.com/topapi/attendance/group/schedule/async";
+    /**
+     * 更新考勤组 url
+     */
+    public static final String UPDATE_GROUP = "https://oapi.dingtalk.com/topapi/attendance/group/modify";
 
     /**
      * 通过免登授权码获取用户信息 url

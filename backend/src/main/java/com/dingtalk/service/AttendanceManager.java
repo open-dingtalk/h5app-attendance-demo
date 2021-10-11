@@ -123,6 +123,37 @@ public class AttendanceManager {
 
 
     /**
+     * 保存考勤组
+     *
+     * @param
+     * @return
+     */
+    public OapiAttendanceGroupModifyResponse.TopGroupVo updateGroup(String userId, long groupId, long shiftId) throws ApiException {
+        // 1. 获取access_token
+        String accessToken = AccessTokenUtil.getAppAccessToken();
+
+        // 2. 更新考勤组
+        // 更多设置可参考文档： https://developers.dingtalk.com/document/app/scheduling-system-attendance-group-scheduling
+        DingTalkClient client = new DefaultDingTalkClient(UrlConstant.UPDATE_GROUP);
+        OapiAttendanceGroupModifyRequest req = new OapiAttendanceGroupModifyRequest();
+        req.setOpUserId(userId);
+        OapiAttendanceGroupModifyRequest.TopGroupVo topGroupVo = new OapiAttendanceGroupModifyRequest.TopGroupVo();
+        List<OapiAttendanceGroupModifyRequest.TopShiftVo> topShiftVos = new ArrayList<>();
+        OapiAttendanceGroupModifyRequest.TopShiftVo topShiftVo = new OapiAttendanceGroupModifyRequest.TopShiftVo();
+        topShiftVos.add(topShiftVo);
+        topShiftVo.setId(shiftId);
+        topGroupVo.setShiftVoList(topShiftVos);
+        topGroupVo.setId(groupId);
+        req.setTopGroup(topGroupVo);
+        OapiAttendanceGroupModifyResponse rsp = client.execute(req, accessToken);
+        log.info("updateGroup rsp body:{}", rsp.getBody());
+        if(rsp.getSuccess()){
+            return rsp.getResult();
+        }
+        return null;
+    }
+
+    /**
      * 考勤排班
      *
      * @param

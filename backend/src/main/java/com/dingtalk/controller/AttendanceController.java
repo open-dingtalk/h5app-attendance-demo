@@ -51,12 +51,14 @@ public class AttendanceController {
     public RpcServiceResult createShift(@RequestBody String paramStr) throws Exception {
         System.out.println("paramStr: " + paramStr);
         Map params = JSONObject.parseObject(paramStr, Map.class);
+        Long groupId = (Long)params.get("groupId");
         String userId = params.get("userId").toString();
         String classGroupName = params.get("classGroupName").toString();
         String beginTime = params.get("beginTime").toString();
         String endTime = params.get("endTime").toString();
         String shiftName = params.get("shiftName").toString();
         OapiAttendanceShiftAddResponse.TopAtClassVo shift = attendanceManager.createShift(userId, classGroupName, beginTime, endTime, shiftName);
+        OapiAttendanceGroupModifyResponse.TopGroupVo updateGroup = attendanceManager.updateGroup(userId, groupId, shift.getId());
         log.info("createShift:{}", shift);
         return RpcServiceResult.getSuccessResult(shift);
     }

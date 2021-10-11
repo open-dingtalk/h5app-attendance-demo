@@ -240,6 +240,7 @@ class App extends React.Component {
     createShift() {
         let data = this.state.shiftData;
         data.userId = this.state.userId;
+        data.groupId = this.state.groupId;
         axios.post(this.state.domain + "/attendance/createShift", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
