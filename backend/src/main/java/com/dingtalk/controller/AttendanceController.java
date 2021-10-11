@@ -53,9 +53,10 @@ public class AttendanceController {
         Map params = JSONObject.parseObject(paramStr, Map.class);
         String userId = params.get("userId").toString();
         String classGroupName = params.get("classGroupName").toString();
-        String checkTime = params.get("checkTime").toString();
+        String beginTime = params.get("beginTime").toString();
+        String endTime = params.get("endTime").toString();
         String shiftName = params.get("shiftName").toString();
-        OapiAttendanceShiftAddResponse.TopAtClassVo shift = attendanceManager.createShift(userId, classGroupName, checkTime, shiftName);
+        OapiAttendanceShiftAddResponse.TopAtClassVo shift = attendanceManager.createShift(userId, classGroupName, beginTime, endTime, shiftName);
         log.info("createShift:{}", shift);
         return RpcServiceResult.getSuccessResult(shift);
     }

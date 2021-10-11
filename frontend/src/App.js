@@ -36,7 +36,8 @@ class App extends React.Component {
             shiftData: {
                 classGroupName: "def",
                 shiftName: "白班",
-                checkTime: "2020-10-18 08:00:00"
+                beginTime: "2020-10-18 08:00:00",
+                endTime: "2020-10-18 18:00:00"
             },
             scheduleInfo: {
                 schedules: []

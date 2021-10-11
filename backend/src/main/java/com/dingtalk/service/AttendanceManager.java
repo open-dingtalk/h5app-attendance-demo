@@ -73,7 +73,8 @@ public class AttendanceManager {
      */
     public OapiAttendanceShiftAddResponse.TopAtClassVo createShift(String userId,
                                                                  String classGroupName,
-                                                                 String checkTime,
+                                                                 String beginTime,
+                                                                 String endTime,
                                                                  String shiftName) throws ApiException {
         // 1. 获取access_token
         String accessToken = AccessTokenUtil.getAppAccessToken();
@@ -93,11 +94,19 @@ public class AttendanceManager {
         OapiAttendanceShiftAddRequest.TopAtTimeVo timeVo = new OapiAttendanceShiftAddRequest.TopAtTimeVo();
         timeVo.setAcross(0L);
         timeVo.setBeginMin(0L);
-        timeVo.setCheckTime(StringUtils.parseDateTime(checkTime));
+        timeVo.setCheckTime(StringUtils.parseDateTime(beginTime));
         timeVo.setCheckType("OnDuty");
         timeVo.setFreeCheck(false);
         timeVo.setEndMin(-1L);
         timeVos.add(timeVo);
+        OapiAttendanceShiftAddRequest.TopAtTimeVo timeVo1 = new OapiAttendanceShiftAddRequest.TopAtTimeVo();
+        timeVo1.setAcross(0L);
+        timeVo1.setBeginMin(0L);
+        timeVo1.setCheckTime(StringUtils.parseDateTime(endTime));
+        timeVo1.setCheckType("OnDuty");
+        timeVo1.setFreeCheck(false);
+        timeVo1.setEndMin(-1L);
+        timeVos.add(timeVo1);
         sectionVo.setTimes(timeVos);
         sectionVos.add(sectionVo);
         topAtClassVo.setSections(sectionVos);
