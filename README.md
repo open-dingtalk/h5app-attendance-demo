@@ -68,7 +68,7 @@ app:
 **打开项目，命令行中执行以下命令，编译打包生成build文件**
 
 ```shell
-cd front-end
+cd frontend
 npm install
 npm run build
 ```
