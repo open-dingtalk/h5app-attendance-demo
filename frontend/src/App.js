@@ -1,8 +1,12 @@
 import './App.css';
-import * as dd from 'dingtalk-jsapi';
+// import * as dd from 'dingtalk-jsapi';
 import axios from 'axios';
 import React from 'react';
 import './App.css';
+import moment from "moment";
+import CreateGroup from "./components/CreateGroup";
+import CreateShift from "./components/CreateShift";
+import UploadRecord from "./components/UploadRecord";
 
 
 class App extends React.Component {
@@ -14,11 +18,11 @@ class App extends React.Component {
             domain: "",
             corpId: '',
             authCode: '',
-            userId: '',
+            userId: '01186053144726141594',
             userName: '',
             showType: 0,
-            groupId: 0,
-            shiftId: 0,
+            groupId: 889575013,
+            shiftId: 878845020,
             groupData: {
                 positions: [{
                     address: "生物科技产业园区经二路21号",
@@ -48,16 +52,16 @@ class App extends React.Component {
                 time: "2021-10-09 09:00:00"
             },
             query: {
-                workDateFrom: "2021-09-01 00:00:00",
-                workDateTo: "2021-09-06 08:00:00",
+                workDateFrom: moment().subtract(7,"days").format('YYYY-MM-DD HH:mm:ss'),
+                workDateTo:  moment().format('YYYY-MM-DD HH:mm:ss'),
                 offset: 0,
                 limit: 50,
                 userIdList: []
             },
             recordList: [],
             leaveInfo: {
-                startTime: "2021-10-08 09:00:00",
-                endTime: "2021-10-12 09:00:00"
+                startTime: moment().subtract(7,"days").format('YYYY-MM-DD HH:mm:ss'),
+                endTime: moment().format('YYYY-MM-DD HH:mm:ss')
             },
             leaveList: []
         }
@@ -67,71 +71,100 @@ class App extends React.Component {
         if (this.state.userId === '') {
             this.login();
         }
-        let body;
-        if (this.state.showType === 0) {
-            body =
-                <div className="App">
-                    <h2>考勤功能演示</h2>
-                    <p>
-                        <button type="button" onClick={() => this.createGroup()}>创建考勤组</button>
-                    </p>
-                    <p>
-                        <button type="button" onClick={() => this.createShift()}>创建考勤班次</button>
-                    </p>
-                    <p>
-                        <button type="button" onClick={() => this.attendanceSchedule()}>进行考勤排班</button>
-                    </p>
-                    <p>
-                        <button type="button" onClick={() => this.uploadRecord()}>上传打卡记录</button>
-                    </p>
-                    <p>
-                        <button type="button" onClick={() => this.attendanceList()}>获取打卡结果</button>
-                    </p>
-                    <p>
-                        <button type="button" onClick={() => this.leaveStatus()}>查看请假状态</button>
-                    </p>
-
-                </div>
-        } else if (this.state.showType === 1) {
-            body =
-                <div>
-                    <h3>
-                        <button type={"button"} onClick={() => this.back()}>返回</button>
-                    </h3>
-                    <h3>打卡记录：</h3>
-                    {
-                        this.state.recordList.map((item, i) =>
-                            <div key={i}>
-                                <div>
-                                    工作日：{() => this.getDate(new Date(item.workDate))}<br/>
-                                    打卡时间：{() => this.getDate(new Date(item.userCheckTime))}
-                                </div>
-                            </div>
-                        )
-                    }
-                </div>
-        } else if (this.state.showType === 2) {
-            body =
-                <div>
-                    <h3>
-                        <button type={"button"} onClick={() => this.back()}>返回</button>
-                    </h3>
-                    <h3>请假状态：</h3>
-                    {
-                        this.state.leaveList.map((item, i) =>
-                            <div key={i}>
-                                <div>
-                                    开始时间：{() => this.getDate(new Date(item.startTime))}<br/>
-                                    结束时间：{() => this.getDate(new Date(item.endTime))}<br/>
-                                    请假时长：{() => this.getLeaveTime(this.durationPercent , item.durationUnit)}<br/>
-                                </div>
-                            </div>
-                        )
-                    }
-                </div>
-        }
         return (
-            <div>{body}</div>
+            <div className="App">
+                {this.state.showType === 0 && (
+                    <div className="App">
+                        <h2>考勤功能演示</h2>
+                        <p>
+                            <button type="button" onClick={() => this.setState({ showType: 3})}>创建考勤组</button>
+                        </p>
+                        <p>
+                            <button type="button" onClick={() => this.setState({ showType: 4})}>创建考勤班次</button>
+                        </p>
+                        <p>
+                            <button type="button" onClick={() => this.attendanceSchedule()}>进行考勤排班</button>
+                        </p>
+                        <p>
+                            <button type="button" onClick={() => this.setState({ showType: 5})}>上传打卡记录</button>
+                        </p>
+                        <p>
+                            <button type="button" onClick={() => this.attendanceList()}>查看7天内打卡结果</button>
+                        </p>
+                        <p>
+                            <button type="button" onClick={() => this.leaveStatus()}>查看7天内请假状态</button>
+                        </p>
+
+                    </div>
+                )}
+
+
+                {this.state.showType === 5 && (
+                    <div>
+                        <UploadRecord
+                            title={"上传打卡记录"}
+                            onClick={(e) => this.uploadRecord(e)}
+                        />
+                    </div>
+                )}
+
+                {this.state.showType === 4 && (
+                    <div>
+                        <CreateShift
+                            title={"创建考勤班次"}
+                            onClick={(e) => this.createShift(e)}
+                        />
+                    </div>
+                )}
+
+                {this.state.showType === 3 && (
+                    <div>
+                        <CreateGroup
+                            title={"创建考勤组"}
+                            onClick={(e) => this.createGroup(e)}
+                        />
+                    </div>
+                )}
+
+                {this.state.showType === 1 && (
+                    <div>
+                        <h3>
+                            <button type={"button"} onClick={() => this.back()}>返回</button>
+                        </h3>
+                        <h3>打卡记录：</h3>
+                        {
+                            this.state.recordList.map((item, i) =>
+                                <div key={i}>
+                                    <div>
+                                        工作日：{() => this.getDate(new Date(item.workDate))}<br/>
+                                        打卡时间：{() => this.getDate(new Date(item.userCheckTime))}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+                )}
+
+                {this.state.showType === 2 && (
+                    <div>
+                        <h3>
+                            <button type={"button"} onClick={() => this.back()}>返回</button>
+                        </h3>
+                        <h3>请假状态：</h3>
+                        {
+                            this.state.leaveList.map((item, i) =>
+                                <div key={i}>
+                                    <div>
+                                        开始时间：{() => this.getDate(new Date(item.startTime))}<br/>
+                                        结束时间：{() => this.getDate(new Date(item.endTime))}<br/>
+                                        请假时长：{() => this.getLeaveTime(this.durationPercent , item.durationUnit)}<br/>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+                )}
+            </div>
         );
     }
 
@@ -196,9 +229,12 @@ class App extends React.Component {
         })
     }
 
-    uploadRecord() {
+    uploadRecord(uploadRecordData) {
+        const { deviceName,time} = uploadRecordData
         let data = this.state.record;
         data.userId = this.state.userId;
+        data.deviceName = deviceName;
+        data.time = time;
         axios.post(this.state.domain + "/attendance/uploadRecord", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
@@ -237,10 +273,14 @@ class App extends React.Component {
         })
     }
 
-    createShift() {
+    createShift(shiftData) {
+        const { shiftName,beginTime,endTime} = shiftData
         let data = this.state.shiftData;
         data.userId = this.state.userId;
         data.groupId = this.state.groupId;
+        data.shiftName = shiftName;
+        data.beginTime = beginTime;
+        data.endTime = endTime;
         axios.post(this.state.domain + "/attendance/createShift", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
@@ -259,9 +299,15 @@ class App extends React.Component {
         })
     }
 
-    createGroup() {
+    createGroup(groupData) {
+        const { name,title,address,latitude,longitude} = groupData
         let data = this.state.groupData;
         data.userId = this.state.userId;
+        data.name = name;
+        data.positions[0].title = title;
+        data.positions[0].latitude = latitude;
+        data.positions[0].longitude = longitude;
+        data.positions[0].address = address;
         axios.post(this.state.domain + "/attendance/createGroup", JSON.stringify(data),{headers:{"Content-Type":"application/json"}}
         ).then(res => {
             if (res && res.data.success) {
@@ -284,46 +330,46 @@ class App extends React.Component {
         axios.get(this.state.domain + "/getCorpId")
             .then(res => {
                 if (res.data) {
-                    this.loginAction(res.data);
+                    // this.loginAction(res.data);
                 }
             }).catch(error => {
             alert("corpId err, " + JSON.stringify(error))
         })
     }
 
-    loginAction(corpId) {
-        // alert("corpId: " +  corpId);
-        let _this = this;
-        dd.runtime.permission.requestAuthCode({
-            corpId: corpId,//企业 corpId
-            onSuccess: function (res) {
-                // 调用成功时回调
-                _this.state.authCode = res.code
-                axios.get(_this.state.domain + "/login?authCode=" + _this.state.authCode
-                ).then(res => {
-                    if (res && res.data.success) {
-                        let userId = res.data.data.userId;
-                        let userName = res.data.data.userName;
-                        alert('登录成功，你好' + userName);
-                        setTimeout(function () {
-                            _this.setState({
-                                userId: userId,
-                                userName: userName
-                            })
-                        }, 0)
-                    } else {
-                        alert("login failed --->" + JSON.stringify(res));
-                    }
-                }).catch(error => {
-                    alert("httpRequest failed --->" + JSON.stringify(error))
-                })
-            },
-            onFail: function (err) {
-                // 调用失败时回调
-                alert("requestAuthCode failed --->" + JSON.stringify(err))
-            }
-        });
-    }
+    // loginAction(corpId) {
+    //     // alert("corpId: " +  corpId);
+    //     let _this = this;
+    //     dd.runtime.permission.requestAuthCode({
+    //         corpId: corpId,//企业 corpId
+    //         onSuccess: function (res) {
+    //             // 调用成功时回调
+    //             _this.state.authCode = res.code
+    //             axios.get(_this.state.domain + "/login?authCode=" + _this.state.authCode
+    //             ).then(res => {
+    //                 if (res && res.data.success) {
+    //                     let userId = res.data.data.userId;
+    //                     let userName = res.data.data.userName;
+    //                     alert('登录成功，你好' + userName);
+    //                     setTimeout(function () {
+    //                         _this.setState({
+    //                             userId: userId,
+    //                             userName: userName
+    //                         })
+    //                     }, 0)
+    //                 } else {
+    //                     alert("login failed --->" + JSON.stringify(res));
+    //                 }
+    //             }).catch(error => {
+    //                 alert("httpRequest failed --->" + JSON.stringify(error))
+    //             })
+    //         },
+    //         onFail: function (err) {
+    //             // 调用失败时回调
+    //             alert("requestAuthCode failed --->" + JSON.stringify(err))
+    //         }
+    //     });
+    // }
 
 }
 

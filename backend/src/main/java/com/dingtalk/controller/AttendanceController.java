@@ -51,7 +51,7 @@ public class AttendanceController {
     public RpcServiceResult createShift(@RequestBody String paramStr) throws Exception {
         System.out.println("paramStr: " + paramStr);
         Map params = JSONObject.parseObject(paramStr, Map.class);
-        Long groupId = (Long)params.get("groupId");
+        Long groupId = Long.parseLong(params.get("groupId").toString());
         String userId = params.get("userId").toString();
         String classGroupName = params.get("classGroupName").toString();
         String beginTime = params.get("beginTime").toString();
@@ -69,7 +69,7 @@ public class AttendanceController {
         System.out.println("paramStr: " + paramStr);
         Map params = JSONObject.parseObject(paramStr, Map.class);
         String userId = params.get("userId").toString();
-        Long groupId = (Long) params.get("groupId");
+        Long groupId = Long.parseLong(params.get("groupId").toString());
         String listString = params.get("schedules").toString();
         List<OapiAttendanceGroupScheduleAsyncRequest.TopScheduleParam> topScheduleParams = JSONArray.parseArray(listString, OapiAttendanceGroupScheduleAsyncRequest.TopScheduleParam.class);
         OapiAttendanceGroupScheduleAsyncResponse response = attendanceManager.attendanceSchedule(userId, groupId, topScheduleParams);
