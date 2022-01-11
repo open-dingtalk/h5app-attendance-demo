@@ -1,5 +1,5 @@
 import "./App.css"
-// import * as dd from 'dingtalk-jsapi';
+import * as dd from 'dingtalk-jsapi';
 import axios from "axios"
 import React from "react"
 import "./App.css"
@@ -18,11 +18,11 @@ class App extends React.Component {
       domain: "",
       corpId: "",
       authCode: "",
-      userId: "01186053144726141594",
+      userId: "",
       userName: "",
       showType: 0,
-      groupId: 889575013,
-      shiftId: 878845020,
+      groupId: 0,
+      shiftId: 0,
       groupData: {
         positions: [
           {
@@ -427,7 +427,7 @@ class App extends React.Component {
       .get(this.state.domain + "/getCorpId")
       .then((res) => {
         if (res.data) {
-          // this.loginAction(res.data);
+          this.loginAction(res.data);
         }
       })
       .catch((error) => {
@@ -435,39 +435,39 @@ class App extends React.Component {
       })
   }
 
-  // loginAction(corpId) {
-  //     // alert("corpId: " +  corpId);
-  //     let _this = this;
-  //     dd.runtime.permission.requestAuthCode({
-  //         corpId: corpId,//企业 corpId
-  //         onSuccess: function (res) {
-  //             // 调用成功时回调
-  //             _this.state.authCode = res.code
-  //             axios.get(_this.state.domain + "/login?authCode=" + _this.state.authCode
-  //             ).then(res => {
-  //                 if (res && res.data.success) {
-  //                     let userId = res.data.data.userId;
-  //                     let userName = res.data.data.userName;
-  //                     alert('登录成功，你好' + userName);
-  //                     setTimeout(function () {
-  //                         _this.setState({
-  //                             userId: userId,
-  //                             userName: userName
-  //                         })
-  //                     }, 0)
-  //                 } else {
-  //                     alert("login failed --->" + JSON.stringify(res));
-  //                 }
-  //             }).catch(error => {
-  //                 alert("httpRequest failed --->" + JSON.stringify(error))
-  //             })
-  //         },
-  //         onFail: function (err) {
-  //             // 调用失败时回调
-  //             alert("requestAuthCode failed --->" + JSON.stringify(err))
-  //         }
-  //     });
-  // }
+  loginAction(corpId) {
+      // alert("corpId: " +  corpId);
+      let _this = this;
+      dd.runtime.permission.requestAuthCode({
+          corpId: corpId,//企业 corpId
+          onSuccess: function (res) {
+              // 调用成功时回调
+              _this.state.authCode = res.code
+              axios.get(_this.state.domain + "/login?authCode=" + _this.state.authCode
+              ).then(res => {
+                  if (res && res.data.success) {
+                      let userId = res.data.data.userId;
+                      let userName = res.data.data.userName;
+                      alert('登录成功，你好' + userName);
+                      setTimeout(function () {
+                          _this.setState({
+                              userId: userId,
+                              userName: userName
+                          })
+                      }, 0)
+                  } else {
+                      alert("login failed --->" + JSON.stringify(res));
+                  }
+              }).catch(error => {
+                  alert("httpRequest failed --->" + JSON.stringify(error))
+              })
+          },
+          onFail: function (err) {
+              // 调用失败时回调
+              alert("requestAuthCode failed --->" + JSON.stringify(err))
+          }
+      });
+  }
 }
 
 export default App
