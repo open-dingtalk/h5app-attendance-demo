@@ -171,15 +171,18 @@ class App extends React.Component {
                 </button>
               </h3>
               <h3>打卡记录：</h3>
-              {this.state.recordList.map((item, i) => (
-                <div key={i}>
-                  <div>
-                    工作日：{() => this.getDate(new Date(item.workDate))}
-                    <br />
-                    打卡时间：{() => this.getDate(new Date(item.userCheckTime))}
+              {this.state.recordList.length > 0 && (this.state.recordList.map((item, i) => (
+                  <div key={i}>
+                    <div>
+                      工作日：{() => this.getDate(new Date(item.workDate))}
+                      <br />
+                      打卡时间：{() => this.getDate(new Date(item.userCheckTime))}
+                    </div>
                   </div>
-                </div>
-              ))}
+              )))}
+              {this.state.recordList.length === 0 && (
+                  <div>暂无7天内打卡记录，试试在钉钉考勤中打卡</div>
+              )}
             </div>
           )}
 
@@ -191,21 +194,24 @@ class App extends React.Component {
                 </button>
               </h3>
               <h3>请假状态：</h3>
-              {this.state.leaveList.map((item, i) => (
-                <div key={i}>
-                  <div>
-                    开始时间：{() => this.getDate(new Date(item.startTime))}
-                    <br />
-                    结束时间：{() => this.getDate(new Date(item.endTime))}
-                    <br />
-                    请假时长：
-                    {() =>
-                      this.getLeaveTime(this.durationPercent, item.durationUnit)
-                    }
-                    <br />
+              {this.state.leaveList.length > 0 && (this.state.leaveList.map((item, i) => (
+                  <div key={i}>
+                    <div>
+                      开始时间：{() => this.getDate(new Date(item.startTime))}
+                      <br />
+                      结束时间：{() => this.getDate(new Date(item.endTime))}
+                      <br />
+                      请假时长：
+                      {() =>
+                          this.getLeaveTime(this.durationPercent, item.durationUnit)
+                      }
+                      <br />
+                    </div>
                   </div>
-                </div>
-              ))}
+              )))}
+              {this.state.leaveList.length === 0 && (
+                  <div>暂无7天内请假记录</div>
+              )}
             </div>
           )}
         </div>
@@ -344,7 +350,7 @@ class App extends React.Component {
       .then((res) => {
         if (res && res.data.success) {
           if (res.data.data.success) {
-            alert("排班成功！")
+            alert("排班成功！可进入oa后台查看考勤排班")
           }
         } else {
           alert("attendanceSchedule failed --->" + JSON.stringify(res))
@@ -376,7 +382,7 @@ class App extends React.Component {
             this.setState({
               shiftId: res.data.data.id,
             })
-            alert("创建班次成功！")
+            alert("创建班次成功！可进入oa后台查看考勤排班")
             this.back()
           }
         } else {
@@ -410,7 +416,7 @@ class App extends React.Component {
             this.setState({
               groupId: res.data.data.id,
             })
-            alert("创建考勤组成功！")
+            alert("创建考勤组成功！可进入oa后台查看考勤组")
             this.back()
           }
         } else {
