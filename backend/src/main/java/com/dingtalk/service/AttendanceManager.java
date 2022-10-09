@@ -103,7 +103,7 @@ public class AttendanceManager {
         timeVo1.setAcross(0L);
         timeVo1.setBeginMin(0L);
         timeVo1.setCheckTime(StringUtils.parseDateTime(endTime));
-        timeVo1.setCheckType("OnDuty");
+        timeVo1.setCheckType("OffDuty");
         timeVo1.setFreeCheck(false);
         timeVo1.setEndMin(-1L);
         timeVos.add(timeVo1);
